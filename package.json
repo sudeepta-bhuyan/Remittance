@@ -1,0 +1,24 @@
+{
+  "name": "remittance",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "file-loader": "^2.0.0",
+    "truffle": "^4.1.13",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.8"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.2",
+    "jquery": "^3.3.1",
+    "truffle-contract": "^3.0.6",
+    "web3": "^0.20.6"
+  }
+}
