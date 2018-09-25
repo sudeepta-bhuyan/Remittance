@@ -1,7 +1,7 @@
 pragma solidity ^0.4.20;
 
 contract Owned {
-    address public owner;
+    address private owner;
     
     constructor() public {
         owner = msg.sender;    
