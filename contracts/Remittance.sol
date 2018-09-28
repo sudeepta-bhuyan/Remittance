@@ -11,29 +11,35 @@ contract Remittance is Pausable {
         string notAfter; //Not used
         bool fundReleased;
     }
-    mapping(uint256 => Request) requests;
-    uint256 numRequests;
+    mapping(uint256 => Request) public requests;
+    uint256 public numRequests;
+    mapping(bytes32 => bool) public usedSolutions;
     
-    event RemittanceRequestCreated(address from, address to, uint256 amount);
-    event RemittanceClaimed(address by, uint256 amount);
+    event RemittanceRequestCreated(uint256 requestID, address indexed from, address indexed to, uint256 amount);
+    event RemittanceClaimed(uint256 requestID, address indexed by, uint256 amount);
 
-    function submitRemittanceRequest(address exch, bytes32 data, string date) public payable onlyIfRunning returns (uint256 requestID) {
+    function submitRemittanceRequest(address exch, bytes32 userData, string date)
+        public payable onlyIfRunning returns (uint256 requestID) {
+
+        require(!usedSolutions[userData]);
+        usedSolutions[userData] = true;
+
         requestID = numRequests++;
-        requests[requestID] = Request(msg.sender, exch, msg.value, data, date, false);
-        emit RemittanceRequestCreated(msg.sender, exch, msg.value);
+        requests[requestID] = Request(msg.sender, exch, msg.value, userData, date, false);
+        emit RemittanceRequestCreated(requestID, msg.sender, exch, msg.value);
     }
     
     function claimRemittance(uint256 requestId, string puzzleInput) public onlyIfRunning {
         Request storage req = requests[requestId];
-        require(req.fundReleased == false);
+        require(!req.fundReleased);
         require(msg.sender == req.receiver);
         
         bytes32 candidateSolution = keccak256(abi.encodePacked(puzzleInput));
         require(req.puzzleSolution == candidateSolution);
         req.fundReleased = true;
         
-        emit RemittanceClaimed(msg.sender, req.amount);
+        emit RemittanceClaimed(requestId, msg.sender, req.amount);
         msg.sender.transfer(req.amount);
+        req.amount = 0;
     }
-    
 }

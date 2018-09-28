@@ -3,9 +3,9 @@ import "./Owned.sol";
 
 contract Pausable is Owned {
     
-    bool isRunning;
-    event LogPausedContract(address sender);
-    event LogResumedContract(address sender);
+    bool public isRunning;
+    event LogPausedContract(address indexed sender);
+    event LogResumedContract(address indexed sender);
     
     modifier onlyIfRunning {
         require(isRunning == true);
