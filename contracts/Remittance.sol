@@ -39,7 +39,8 @@ contract Remittance is Pausable {
         req.fundReleased = true;
         
         emit RemittanceClaimed(requestId, msg.sender, req.amount);
-        msg.sender.transfer(req.amount);
+        uint256 amount = req.amount;
         req.amount = 0;
+        msg.sender.transfer(amount);
     }
 }
